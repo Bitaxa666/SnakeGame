@@ -16,11 +16,16 @@ public class GameField extends JPanel implements ActionListener
     private final int ALL_DOTS = 400;
     private Image dot;
     private Image apple;
+    private Image fence;
     private int appleX;
     private int appleY;
+    private int fenceX;
+    private int fenceY;
     private int[] x = new int[ALL_DOTS];
     private int[] y = new int[ALL_DOTS];
     private int dots;
+    //private int gameScore;
+    private boolean gameColor;
     private Timer timer;
     private boolean leftSn = false;
     private boolean rightSn = true;
@@ -36,6 +41,8 @@ public class GameField extends JPanel implements ActionListener
         gameStart();
         addKeyListener(new KeyField());
         setFocusable(true);
+        //gameColor = false;
+
     }
 
     public void gameStart()
@@ -49,12 +56,19 @@ public class GameField extends JPanel implements ActionListener
         timer = new Timer(250, this);
         timer.start();
         createApple();
+        createFence();// создание блока препятствий
+
     }
 
     public void createApple()
     {
         appleX = new Random().nextInt(20)*DOT_SIZE;
         appleY = new Random().nextInt(20)*DOT_SIZE;
+    }
+    public void createFence()
+    {
+        fenceX = new Random().nextInt(20) * DOT_SIZE;
+        fenceY = new Random().nextInt(20) * DOT_SIZE;
     }
 
     public void loadImage()
@@ -63,6 +77,8 @@ public class GameField extends JPanel implements ActionListener
         apple = iia.getImage();
         ImageIcon iid = new ImageIcon("dot.png");
         dot = iid.getImage();
+        ImageIcon ifa = new ImageIcon("fence1.png");
+        fence = ifa.getImage();
     }
 
     public void moveMy()
@@ -97,12 +113,15 @@ public class GameField extends JPanel implements ActionListener
         if(inGame)
         {
             g.drawImage(apple, appleX, appleY, this);
+            g.drawImage(fence, fenceX, fenceY, this);
+
             for(int i=0;i<dots;i++)
             {
                 g.drawImage(dot,x[i], y[i], this);
             }
         } else
         {
+            setBackground(Color.WHITE);
             String gameOver = "Game Over";
             Font f = new Font("Arial",Font.BOLD, 26);
             g.setFont(f);
@@ -119,6 +138,15 @@ public class GameField extends JPanel implements ActionListener
             createApple();
         }
     }
+    public void checkFence()
+    {
+        if(x[0] == fenceX && y[0] == fenceY)
+        {
+            inGame=false;
+            gameColor = true;
+        }
+    }
+
     public void checkWall()
     {
         for(int i=dots; i>0; i--)
@@ -126,19 +154,24 @@ public class GameField extends JPanel implements ActionListener
             if(i>4 && x[0]==x[i] && y[0] == y[i])
             {
                 inGame=false;
+               // gameColor = true;
             }
         }
         if(x[0]>SIZE){
             inGame = false;
+            //gameColor = true;
         }
         if(x[0]<0){
             inGame = false;
+            //gameColor = true;
         }
         if(y[0]>SIZE){
             inGame = false;
+            //gameColor = true;
         }
         if(y[0]<0){
             inGame = false;
+            //gameColor = true;
         }
     }
 
@@ -150,6 +183,7 @@ public class GameField extends JPanel implements ActionListener
             checkApple();
             checkWall();
             moveMy();
+            checkFence();
         }
         repaint();
 

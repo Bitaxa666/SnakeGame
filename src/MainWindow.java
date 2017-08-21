@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by user on 8/2/17.
@@ -13,6 +14,10 @@ public class MainWindow extends JFrame
         setLocation(400,400);
         add(new GameField());
         setVisible(true);
+        /*if(GameField.gameColor ==1)
+        {
+            setBackground(Color.WHITE);
+        }*/
 
     }
 
